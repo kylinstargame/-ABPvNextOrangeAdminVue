@@ -21,15 +21,18 @@ export default class Dict {
   }
 
   init(options) {
+    console.log("Dict Option: ", options);
     if (options instanceof Array) {
       options = { types: options }
     }
     const opts = mergeRecursive(DEFAULT_DICT_OPTIONS, options)
+    console.log("Dict opts: ", opts);
     if (opts.types === undefined) {
       throw new Error('need dict types')
     }
     const ps = []
     this._dictMetas = opts.types.map(t => DictMeta.parse(t))
+    console.log("Dict dictMetas : ",  this._dictMetas);
     this._dictMetas.forEach(dictMeta => {
       const type = dictMeta.type
       Vue.set(this.label, type, {})
@@ -37,6 +40,7 @@ export default class Dict {
       if (dictMeta.lazy) {
         return
       }
+
       ps.push(loadDict(this, dictMeta))
     })
     return Promise.all(ps)
@@ -62,9 +66,11 @@ export default class Dict {
  * @returns {Promise}
  */
 function loadDict(dict, dictMeta) {
+  console.log("loadDict request:", dictMeta);
   return dictMeta.request(dictMeta)
     .then(response => {
       const type = dictMeta.type
+      console.log("loadDict response:", response);
       let dicts = dictMeta.responseConverter(response, dictMeta)
       if (!(dicts instanceof Array)) {
         console.error('the return of responseConverter must be Array.<DictData>')
