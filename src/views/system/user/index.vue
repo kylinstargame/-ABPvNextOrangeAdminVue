@@ -137,7 +137,8 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
+          <el-table-column label="用户编号" align="center"   type="index" v-if="columns[0].visible">
+          </el-table-column>
           <el-table-column label="用户名称" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
@@ -472,8 +473,9 @@ export default {
     getList() {
       this.loading = true;
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.userList = response.rows;
-          this.total = response.total;
+	      console.log("listUser:" , response.data);
+          this.userList = response.data.items;
+          this.total = response.data.totalCount;
           this.loading = false;
         }
       );
