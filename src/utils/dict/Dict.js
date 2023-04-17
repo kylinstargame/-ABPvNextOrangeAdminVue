@@ -66,11 +66,10 @@ export default class Dict {
  * @returns {Promise}
  */
 function loadDict(dict, dictMeta) {
-  console.log("loadDict request:", dictMeta);
   return dictMeta.request(dictMeta)
     .then(response => {
       const type = dictMeta.type
-      console.log("loadDict response:", response);
+      console.log("加载数据字典:", response);
       let dicts = dictMeta.responseConverter(response, dictMeta)
       if (!(dicts instanceof Array)) {
         console.error('the return of responseConverter must be Array.<DictData>')

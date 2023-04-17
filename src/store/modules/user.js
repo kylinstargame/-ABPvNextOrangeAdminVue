@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import {login, logout, getInfo, getUserInfo} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -48,9 +48,9 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    getUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(res => {
+        getUserInfo().then(res => {
           console.log(res.data);
           const user = res.data.user
 

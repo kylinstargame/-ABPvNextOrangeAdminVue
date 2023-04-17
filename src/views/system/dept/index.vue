@@ -220,11 +220,11 @@ export default {
     };
   },
   created() {
-    this.getList();
+    this.getDeptList();
   },
   methods: {
     /** 查询部门列表 */
-    getList() {
+    getDeptList() {
       this.loading = true;
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, "deptId");

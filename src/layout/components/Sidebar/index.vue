@@ -54,7 +54,7 @@ export default {
         }
     },
   mounted() {
-      console.log("sidebarRouters", this.sidebarRouters)
+      console.log("加载菜单列表", this.sidebarRouters)
   }
 };
 </script>
