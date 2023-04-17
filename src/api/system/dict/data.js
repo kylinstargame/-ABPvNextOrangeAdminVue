@@ -20,6 +20,7 @@ export function getData(dictCode) {
 
 // 根据字典类型查询字典数据信息
 export function getDicts(dictType) {
+  console.log("getDict!!!");
   return request({
     url: '/sys/dict/data/type/' + dictType,
     method: 'get'

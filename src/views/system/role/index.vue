@@ -352,8 +352,9 @@ export default {
     getList() {
       this.loading = true;
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.roleList = response.rows;
-          this.total = response.total;
+          console.log(response);
+          this.roleList = response.data.items;
+          this.total = response.data.totalCount;
           this.loading = false;
         }
       );

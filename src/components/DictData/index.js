@@ -9,6 +9,7 @@ function install() {
         labelField: 'dictLabel',
         valueField: 'dictValue',
         request(dictMeta) {
+          console.log("0000000000000000000000");
           return getDicts(dictMeta.type).then(res => res.data)
         },
       },

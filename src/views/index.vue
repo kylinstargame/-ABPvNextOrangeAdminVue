@@ -67,7 +67,6 @@
           >
         </p>
       </el-col>
-
       <el-col :sm="24" :lg="12" style="padding-left: 50px">
         <el-row>
           <el-col :span="12">
