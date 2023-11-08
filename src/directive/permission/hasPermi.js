@@ -5,7 +5,7 @@
 
 import store from '@/store'
 
-export default {
+export default{
   inserted(el, binding, vnode) {
     const { value } = binding
     const all_permission = "*:*:*";

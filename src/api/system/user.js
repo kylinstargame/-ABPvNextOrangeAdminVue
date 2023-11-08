@@ -13,8 +13,9 @@ export function listUser(query) {
 // 查询用户详细
 export function getUser(userId) {
   return request({
-    url: '/sys/user/' + parseStrEmpty(userId),
-    method: 'get'
+    url: '/sys/user/get?userId=' + parseStrEmpty(userId),
+    method: 'get',
+
   })
 }
 
@@ -30,7 +31,7 @@ export function addUser(data) {
 // 修改用户
 export function updateUser(data) {
   return request({
-    url: '/sys/user',
+    url: '/sys/user/edit',
     method: 'put',
     data: data
   })

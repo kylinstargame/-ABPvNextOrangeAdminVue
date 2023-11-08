@@ -237,8 +237,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId === undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" maxlength="20" show-password/>
+           <el-form-item v-if="form.userId === undefined" label="用户密码" prop="password">
+            <el-input v-model="form.userPassword" placeholder="请输入用户密码" type="password" maxlength="20" show-password/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -270,12 +270,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择岗位">
+              <el-select v-model="form.postIds" multiple placeholder="请选择岗位" @change="onPostchanged">
                 <el-option
                   v-for="item in postOptions"
-                  :key="item.postId"
+                  :key="item.id"
                   :label="item.postName"
-                  :value="item.postId"
+                  :value="item.id"
                   :disabled="item.status === 1"
                 ></el-option>
               </el-select>
@@ -283,12 +283,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择角色">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择角色" @change="onRoleChanged">
                 <el-option
                   v-for="item in roleOptions"
-                  :key="item.roleId"
+                  :key="item.id"
                   :label="item.roleName"
-                  :value="item.roleId"
+                  :value="item.id"
                   :disabled="item.status === 1"
                 ></el-option>
               </el-select>
@@ -473,7 +473,7 @@ export default {
     getList() {
       this.loading = true;
       listUser(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          console.log("获取用户列表:" + JSON.stringify(response.data))
+
           this.userList =  response.data.items;
           this.total = response.data.totalCount;
           this.loading = false;
@@ -483,8 +483,10 @@ export default {
     /** 查询部门下拉树结构 */
     getTreeselect() {
       treeselect().then(response => {
-        console.log("获取部门数据" + JSON.stringify(response.data))
+
         this.deptOptions = response.data;
+        console.log("------"+ JSON.stringify(this.deptOptions));
+
       });
     },
     // 筛选节点
@@ -520,7 +522,7 @@ export default {
         deptId: undefined,
         userName: undefined,
         nickName: undefined,
-        password: undefined,
+        userPassword: undefined,
         phoneNumber: undefined,
         creationTime:undefined,
         email: undefined,
@@ -572,35 +574,46 @@ export default {
         this.roleOptions = response.roles;
         this.open = true;
         this.title = "添加用户";
-        this.form.password = this.initPassword;
+        this.form.userpassword = this.initPassword;
       });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+
       this.reset();
       this.getTreeselect();
-      const userId = row.userId || this.ids;
+      const userId = row.id || this.ids;
+
       getUser(userId).then(response => {
-        this.form = response.data;
-        this.postOptions = response.posts;
-        this.roleOptions = response.roles;
-        this.form.postIds = response.postIds;
-        this.form.roleIds = response.roleIds;
+        console.log(">>>>"+JSON.stringify(response.data));
+
+        this.form = response.data.userOutput;
+        this.form.deptId="311";
+
+        console.log("========="+this.form.password);
+        this.form.userPassword=this.form.password;
+        this.postOptions = response.data.posts;
+        this.roleOptions = response.data.roles;
+        this.form.postIds = response.data.postIds;
+
+        this.form.roleIds = response.data.roleIds;
         this.open = true;
         this.title = "修改用户";
-        this.form.password = "";
+        this.form.userpassword = "";
       });
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
+      console.log("/////////////////////"+JSON.stringify(row));
       this.$prompt('请输入"' + row.userName + '"的新密码', "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
         inputPattern: /^.{5,20}$/,
         inputErrorMessage: "用户密码长度必须介于 5 和 20 之间"
+
       }).then(({ value }) => {
-          resetUserPwd(row.userId, value).then(response => {
+          resetUserPwd(row.id, value).then(response => {
             this.$modal.msgSuccess("修改成功，新密码是：" + value);
           });
         }).catch(() => {});
@@ -610,11 +623,23 @@ export default {
       const userId = row.userId;
       this.$router.push("/system/user-auth/role/" + userId);
     },
+    onPostchanged: function(value) {
+      console.log("-------------"+JSON.stringify(value));
+      this.form.postIds=value;
+      this.$forceUpdate();
+    },
+    onRoleChanged: function(value) {
+      console.log("-------------"+JSON.stringify(value));
+      this.form.roleIds=value;
+      this.$forceUpdate();
+    },
     /** 提交按钮 */
     submitForm: function() {
+
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.userId != undefined) {
+          if (this.form.id != undefined) {
+            console.log("+++++++"+JSON.stringify(this.form));
             updateUser(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
