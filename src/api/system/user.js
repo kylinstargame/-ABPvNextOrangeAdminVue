@@ -22,7 +22,7 @@ export function getUser(userId) {
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/sys/user',
+    url: '/sys/useradd',
     method: 'post',
     data: data
   })
@@ -38,10 +38,11 @@ export function updateUser(data) {
 }
 
 // 删除用户
-export function delUser(userId) {
+export function delUser(userIds) {
   return request({
-    url: '/sys/user/' + userId,
-    method: 'delete'
+    url: '/sys/user/delete?userId='+userIds,
+    method: 'post',
+
   })
 }
 
