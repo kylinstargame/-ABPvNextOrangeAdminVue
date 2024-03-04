@@ -99,7 +99,7 @@
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色编号" prop="roleId" width="120" />
+      <el-table-column label="角色编号" prop="rId" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="显示顺序" prop="roleSort" width="100" />
@@ -113,9 +113,9 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="创建时间" align="center" prop="creationTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.creationTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -352,8 +352,9 @@ export default {
     getList() {
       this.loading = true;
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.roleList = response.rows;
-          this.total = response.total;
+          this.roleList = response.data.items;
+          this.total = response.data.totalCount;
+           console.log("MMM"+JSON.stringify(response));
           this.loading = false;
         }
       );
@@ -372,8 +373,7 @@ export default {
     },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
-      // 目前被选中的菜单节点
-      let checkedKeys = this.$refs.menu.getCheckedKeys();
+      /* 目前被选中的菜单节点 */let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
       let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
