@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import {parseStrEmpty} from "@/utils/orange";
 
 // 查询角色列表
 export function listRole(query) {
@@ -12,8 +13,8 @@ export function listRole(query) {
 // 查询角色详细
 export function getRole(roleId) {
   return request({
-    url: '/sys/role/' + roleId,
-    method: 'get'
+    url: '/sys/role/get?roleId=' + parseStrEmpty(roleId),
+    method: 'post'
   })
 }
 

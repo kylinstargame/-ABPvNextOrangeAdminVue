@@ -392,7 +392,8 @@ export default {
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
       return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus;
+        // console.log(JSON.stringify(response));
+        this.menuOptions = response.data.menuTree;
         return response;
       });
     },
@@ -460,7 +461,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      // console.log("item is"+JSON.stringify(selection))
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -516,15 +518,18 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+
       this.reset();
-      const roleId = row.roleId || this.ids
+
+      const roleId = row.Id || this.ids
       const roleMenu = this.getRoleMenuTreeselect(roleId);
       getRole(roleId).then(response => {
         this.form = response.data;
         this.open = true;
         this.$nextTick(() => {
           roleMenu.then(res => {
-            let checkedKeys = res.checkedKeys
+            console.log(JSON.stringify(res.checkedKeys));
+            let checkedKeys = res.data.checkedKeys
             checkedKeys.forEach((v) => {
                 this.$nextTick(()=>{
                     this.$refs.menu.setChecked(v, true ,false);

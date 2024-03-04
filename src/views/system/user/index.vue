@@ -605,7 +605,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-
+      console.log("row is"+JSON.stringify(row));
       this.reset();
       this.getTreeselect();
       const userId = row.id || this.ids;
@@ -614,7 +614,7 @@ export default {
         console.log(">>>>" + JSON.stringify(response.data));
 
         this.form = response.data.userOutput;
-        this.form.deptId = "311";
+
 
         console.log("=========" + this.form.password);
         this.form.userPassword = this.form.password;
