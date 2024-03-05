@@ -12,8 +12,8 @@ export function listRole(query) {
 // 查询角色详细
 export function getRole(roleId) {
   return request({
-    url: '/sys/role/' + roleId,
-    method: 'get'
+    url: '/sys/role/get?roleId=' + roleId,
+    method: 'post'
   })
 }
 
@@ -61,8 +61,8 @@ export function changeRoleStatus(roleId, status) {
 // 删除角色
 export function delRole(roleId) {
   return request({
-    url: '/sys/role/' + roleId,
-    method: 'delete'
+    url: '/sys/role/delete?roleId=' + roleId,
+    method: 'post'
   })
 }
 

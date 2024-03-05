@@ -354,7 +354,7 @@ export default {
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.roleList = response.data.items;
           this.total = response.data.totalCount;
-           console.log("MMM"+JSON.stringify(response));
+
           this.loading = false;
         }
       );
@@ -391,14 +391,15 @@ export default {
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
       return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus;
+        this.menuOptions = response.data.menuTree;
         return response;
       });
     },
     /** 根据角色ID查询部门树结构 */
     getRoleDeptTreeselect(roleId) {
       return roleDeptTreeselect(roleId).then(response => {
-        this.deptOptions = response.depts;
+        console.log(JSON.stringify(response.data));
+        this.deptOptions = response.data.deptTree;
         return response;
       });
     },
@@ -459,7 +460,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -513,22 +514,22 @@ export default {
       this.open = true;
       this.title = "添加角色";
     },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
+    /** 修改按钮操作 */ async handleUpdate(row) {
       this.reset();
-      const roleId = row.roleId || this.ids
-      const roleMenu = this.getRoleMenuTreeselect(roleId);
+      console.log("row is"+JSON.stringify(row));
+      const roleId = row.id || this.ids
+
+      const roleMenu = await this.getRoleMenuTreeselect(roleId);
       getRole(roleId).then(response => {
         this.form = response.data;
         this.open = true;
         this.$nextTick(() => {
-          roleMenu.then(res => {
-            let checkedKeys = res.checkedKeys
+
+            let checkedKeys = roleMenu.data.checkedKeys
             checkedKeys.forEach((v) => {
-                this.$nextTick(()=>{
-                    this.$refs.menu.setChecked(v, true ,false);
-                })
-            })
+              this.$nextTick(() => {
+                this.$refs.menu.setChecked(v, true, false);
+              })
           });
         });
         this.title = "修改角色";
@@ -536,21 +537,20 @@ export default {
     },
     /** 选择角色权限范围触发 */
     dataScopeSelectChange(value) {
+      console.log("value is "+value);
       if(value !== '2') {
         this.$refs.dept.setCheckedKeys([]);
       }
     },
-    /** 分配数据权限操作 */
-    handleDataScope(row) {
+    /** 分配数据权限操作 */ async handleDataScope(row) {
       this.reset();
-      const roleDeptTreeselect = this.getRoleDeptTreeselect(row.roleId);
-      getRole(row.roleId).then(response => {
+      const roleDeptTree = await this.getRoleDeptTreeselect(row.id);
+     // console.log("roledept is" +JSON.stringify(roleDeptTree));
+      getRole(row.id).then(response => {
         this.form = response.data;
         this.openDataScope = true;
         this.$nextTick(() => {
-          roleDeptTreeselect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys);
-          });
+            this.$refs.dept.setCheckedKeys(roleDeptTree.data.checkedKeys);
         });
         this.title = "分配数据权限";
       });
@@ -595,7 +595,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const roleIds = row.roleId || this.ids;
+      const roleIds = row.id || this.ids;
       this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
         return delRole(roleIds);
       }).then(() => {
