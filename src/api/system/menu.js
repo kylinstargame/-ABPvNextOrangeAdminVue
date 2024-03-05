@@ -32,9 +32,6 @@ export function roleMenuTreeselect(roleId) {
     method: 'get'
   })
 }
-//+++++++++++++++++++++++++++++++++++++++++++
-////////////////////////////////、、ssssssssssssssssssssssssss
-// ---------------------------------------------
 
 // 新增菜单
 export function addMenu(data) {
