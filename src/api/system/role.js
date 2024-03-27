@@ -40,7 +40,7 @@ export function updateRole(data) {
 export function dataScope(data) {
   return request({
     url: '/sys/role/dataScope',
-    method: 'put',
+    method: 'post',
     data: data
   })
 }
@@ -87,8 +87,8 @@ export function unallocatedUserList(query) {
 // 取消用户授权角色
 export function authUserCancel(data) {
   return request({
-    url: '/sys/role/authUser/cancel',
-    method: 'put',
+    url: '/sys/role/authUser/cancelAuth',
+    method: 'post',
     data: data
   })
 }
@@ -96,8 +96,8 @@ export function authUserCancel(data) {
 // 批量取消用户授权角色
 export function authUserCancelAll(data) {
   return request({
-    url: '/sys/role/authUser/cancelAll',
-    method: 'put',
+    url: '/sys/role/authUser/cancelAuthMultiple',
+    method: 'post',
     params: data
   })
 }
@@ -105,8 +105,8 @@ export function authUserCancelAll(data) {
 // 授权用户选择
 export function authUserSelectAll(data) {
   return request({
-    url: '/sys/role/authUser/selectAll',
-    method: 'put',
+    url: '/sys/role/authUser/confirmAuth',
+    method: 'post',
     params: data
   })
 }

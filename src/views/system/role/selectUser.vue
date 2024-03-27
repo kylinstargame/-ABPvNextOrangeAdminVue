@@ -103,8 +103,8 @@ export default {
     // 查询表数据
     getList() {
       unallocatedUserList(this.queryParams).then(res => {
-        this.userList = res.rows;
-        this.total = res.total;
+        this.userList = res.data.items;
+        this.total = res.data.totalCount;
       });
     },
     /** 搜索按钮操作 */
@@ -119,7 +119,7 @@ export default {
     },
     /** 选择授权用户操作 */
     handleSelectUser() {
-      const roleId = this.queryParams.roleId;
+      const roleId = this.queryParams.id;
       const userIds = this.userIds.join(",");
       if (userIds == "") {
         this.$modal.msgError("请选择要分配的用户");

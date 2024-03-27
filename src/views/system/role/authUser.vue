@@ -80,7 +80,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-circle-close"
+            icon="el-icon-circle-close"qu
             @click="cancelAuthUser(scope.row)"
             v-hasPermi="['system:role:remove']"
           >取消授权</el-button>
@@ -143,8 +143,9 @@ export default {
     getList() {
       this.loading = true;
       allocatedUserList(this.queryParams).then(response => {
-          this.userList = response.rows;
-          this.total = response.total;
+        console.log("re4sponse is 0"+JSON.stringify(response));
+          this.userList = response.data.items;
+          this.total = response.data.totalCount;
           this.loading = false;
         }
       );
@@ -177,7 +178,8 @@ export default {
     cancelAuthUser(row) {
       const roleId = this.queryParams.roleId;
       this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
-        return authUserCancel({ userId: row.userId, roleId: roleId });
+        console.log(JSON.stringify(row)+"==="+roleId);
+        return authUserCancel({ userId: row.id, roleId: roleId });
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("取消授权成功");
@@ -186,7 +188,7 @@ export default {
     /** 批量取消授权按钮操作 */
     cancelAuthUserAll(row) {
       const roleId = this.queryParams.roleId;
-      const userIds = this.userIds.join(",");
+      // const userIds = this.userIds.join(",");
       this.$modal.confirm('是否取消选中用户授权数据项？').then(function() {
         return authUserCancelAll({ roleId: roleId, userIds: userIds });
       }).then(() => {

@@ -548,6 +548,7 @@ export default {
      // console.log("roledept is" +JSON.stringify(roleDeptTree));
       getRole(row.id).then(response => {
         this.form = response.data;
+        console.log(JSON.stringify(response.data));
         this.openDataScope = true;
         this.$nextTick(() => {
             this.$refs.dept.setCheckedKeys(roleDeptTree.data.checkedKeys);
@@ -557,7 +558,7 @@ export default {
     },
     /** 分配用户操作 */
     handleAuthUser: function(row) {
-      const roleId = row.roleId;
+      const roleId = row.id;
       this.$router.push("/system/role-auth/user/" + roleId);
     },
     /** 提交按钮 */
@@ -584,7 +585,7 @@ export default {
     },
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
-      if (this.form.roleId != undefined) {
+      if (this.form.id != undefined) {
         this.form.deptIds = this.getDeptAllCheckedKeys();
         dataScope(this.form).then(response => {
           this.$modal.msgSuccess("修改成功");
