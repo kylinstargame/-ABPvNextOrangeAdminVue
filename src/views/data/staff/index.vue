@@ -89,32 +89,31 @@
       <el-table-column label="入职年限" align="center" prop="years"/>
       <el-table-column label="入职部门" align="center" prop="dept"/>
       <el-table-column label="简介视频" align="center" prop="video"/>
-      <el-table-column label="个人风采" align="center" prop="photos>
-         <el-upload>
-         </>
-      </>
-      <el-table-column label=" 个人签名“ align="center" prop="signature"/>
-
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['data:staff:edit']"
-          >修改
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['data:staff:remove']"
-          >删除
-          </el-button>
-        </template>
-      </el-table-column>
+      <el-table-column label="个人风采" align="center" prop="photoa"/>
+      <el-table-column label="个人签名“ " align="center" prop="photoa"/>
+    </
+    >
+    <el-table-column label=" 操作
+      " align="center" class-name="small-padding fixed-width">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-edit"
+          @click="handleUpdate(scope.row)"
+          v-hasPermi="['data:staff:edit']"
+        >修改
+        </el-button>
+        <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="handleDelete(scope.row)"
+          v-hasPermi="['data:staff:remove']"
+        >删除
+        </el-button>
+      </template>
+    </el-table-column>
     </el-table>
 
     <pagination
@@ -141,13 +140,37 @@
           <el-input v-model="form.video" placeholder="请输入简介视频"/>
         </el-form-item>
         <el-form-item label="个人签名" prop="signature">
-          <el-input v-model="form.signature" placeholder="请输入个人签名"/>
+          <el-upload :action="uploadUrl" :auto--upload="false">
+            <i slot="default" class="el-icon-plus"></i>
+            <div slot="file" slot-scope="{file}">
+              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+              <span class="el-upload-list__item-actions">
+              <span class="el-upload-list__item-preview" click="handlePictureCardPreview(file)">
+                  <i class="el-icon-zoom-in"></i>
+              </span>
+              <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+            <i class="el-icon-download"></i>
+        </span>
+        <span
+          v-if="!disabled"
+          class="el-upload-list__item-delete"
+          @click="handleRemove(file)"
+        >
+          <i class="el-icon-delete"></i>
+        </span>
+      </span>
+            </div>
+          </el-upload>
+
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
+    </el-dialog>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
@@ -159,56 +182,88 @@ export default {
   name: "Staff",
   data() {
     return {
+      uploadUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false,
       // 遮罩层
-      loading: true,
+      loading:
+        true,
       // 选中数组
-      ids: [],
+      ids:
+        [],
       // 非单个禁用
-      single: true,
+      single:
+        true,
       // 非多个禁用
-      multiple: true,
+      multiple:
+        true,
       // 显示搜索条件
-      showSearch: true,
+      showSearch:
+        true,
       // 总条数
       total: 0,
       // 代员工信息表格数据
-      staffList: [],
+      staffList:
+        [],
       // 弹出层标题
-      title: "",
+      title:
+        "",
       // 是否显示弹出层
-      open: false,
+      open:
+        false,
       // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        staffname: null,
-        years: null,
-        dept: null,
-        video: null,
-        remark: null,
-        signature: null,
-        extraproperties: null,
-        concurrencystamp: null,
-        creationtime: null,
-        creatorid: null,
-        lastmodificationtime: null,
-        lastmodifierid: null,
-        isdeleted: null,
-        deleterid: null,
-        deletiontime: null
-      },
+      queryParams:
+        {
+          pageNum: 1,
+          pageSize:
+            10,
+          staffname:
+            null,
+          years:
+            null,
+          dept:
+            null,
+          video:
+            null,
+          remark:
+            null,
+          signature:
+            null,
+          extraproperties:
+            null,
+          concurrencystamp:
+            null,
+          creationtime:
+            null,
+          creatorid:
+            null,
+          lastmodificationtime:
+            null,
+          lastmodifierid:
+            null,
+          isdeleted:
+            null,
+          deleterid:
+            null,
+          deletiontime:
+            null
+        },
       // 表单参数
-      form: {},
+      form: {}
+      ,
       // 表单校验
       rules: {
         creationtime: [
           {required: true, message: "$comment不能为空", trigger: "blur"}
         ],
-        isdeleted: [
-          {required: true, message: "$comment不能为空", trigger: "blur"}
-        ],
+        isdeleted:
+          [
+            {required: true, message: "$comment不能为空", trigger: "blur"}
+          ],
       }
-    };
+    }
+      ;
   },
   created() {
     this.getList();
@@ -218,8 +273,10 @@ export default {
     getList() {
       this.loading = true;
       listStaff(this.queryParams).then(response => {
-        this.staffList = response.rows;
-        this.total = response.total;
+
+        console.log(JSON.stringify(response));
+        this.staffList = response.data.items;
+        this.total = response.data.totalCount;
         this.loading = false;
       });
     },
@@ -318,7 +375,17 @@ export default {
       this.download('data/staff/export', {
         ...this.queryParams
       }, `staff_${new Date().getTime()}.xlsx`)
+    },
+    uploadPhotos(file) {
+      console.log(file);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleDownload(file) {
+      console.log(file);
     }
-  }
+  },
 };
 </script>
