@@ -20,7 +20,7 @@ export function getStaff(id) {
 // 新增代员工信息
 export function addStaff(data) {
   return request({
-    url: '/data/staff',
+    url: '/data/staff/add',
     method: 'post',
     data: data
   })
