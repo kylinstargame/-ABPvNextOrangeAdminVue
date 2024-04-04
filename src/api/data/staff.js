@@ -12,8 +12,8 @@ export function listStaff(query) {
 // 查询代员工信息详细
 export function getStaff(id) {
   return request({
-    url: '/data/staff/' + id,
-    method: 'get'
+    url: '/data/staff/get?staffId='+id,
+    method: 'post'
   })
 }
 
@@ -38,7 +38,7 @@ export function updateStaff(data) {
 // 删除代员工信息
 export function delStaff(id) {
   return request({
-    url: '/data/staff/' + id,
-    method: 'delete'
+    url: '/data/staff/delete?staffId=' + id,
+    method: "post"
   })
 }

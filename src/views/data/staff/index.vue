@@ -1,133 +1,213 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
-             label-width="68px">
-      <el-form-item label="员工名称" prop="name">
-        <el-input v-model="queryParams.name" placeholder="请输入员工名称" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="入职年限" prop="years">
-        <el-input v-model="queryParams.years" placeholder="请输入入职年限" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="入职部门" prop="dept">
-        <el-input
-          v-model="queryParams.dept"
-          placeholder="请输入入职部门"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="app-container">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
+                 label-width="68px">
+            <el-form-item label="员工名称" prop="name">
+                <el-input v-model="queryParams.name" placeholder="请输入员工名称" clearable
+                          @keyup.enter.native="handleQuery"/>
+            </el-form-item>
+            <el-form-item label="入职年限" prop="years">
+                <el-input v-model="queryParams.years" placeholder="请输入入职年限" clearable
+                          @keyup.enter.native="handleQuery"/>
+            </el-form-item>
+            <el-form-item label="入职部门" prop="dept">
+                <el-input
+                        v-model="queryParams.dept"
+                        placeholder="请输入入职部门"
+                        clearable
+                        @keyup.enter.native="handleQuery"
+                />
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+        </el-form>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['data:staff:add']"
-        >新增
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['data:staff:edit']"
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['data:staff:remove']"
-        >删除
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['data:staff:export']"
-        >导出
-        </el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
+        <el-row :gutter="10" class="mb8">
+            <el-col :span="1.5">
+                <el-button
+                        type="primary"
+                        plain
+                        icon="el-icon-plus"
+                        size="mini"
+                        @click="handleAdd"
+                        v-hasPermi="['data:staff:add']"
+                >新增
+                </el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                        type="success"
+                        plain
+                        icon="el-icon-edit"
+                        size="mini"
+                        :disabled="single"
+                        @click="handleUpdate"
+                        v-hasPermi="['data:staff:edit']"
+                >修改
+                </el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                        type="danger"
+                        plain
+                        icon="el-icon-delete"
+                        size="mini"
+                        :disabled="multiple"
+                        @click="handleDelete"
+                        v-hasPermi="['data:staff:remove']"
+                >删除
+                </el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                        type="warning"
+                        plain
+                        icon="el-icon-download"
+                        size="mini"
+                        @click="handleExport"
+                        v-hasPermi="['data:staff:export']"
+                >导出
+                </el-button>
+            </el-col>
+            <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+        </el-row>
 
-    <el-table v-loading="loading" :data="staffList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="员工编号" align="center" prop="id"/>
-      <el-table-column label="员工名称" align="center" prop="name"/>
-      <el-table-column label="入职年限" align="center" prop="years"/>
-      <el-table-column label="入职部门" align="center" prop="dept"/>
-      <el-table-column label="简介视频" align="center" prop="video"/>
-      <el-table-column label="个人风采" align="center" prop="photos">
-        <template slot-scope="scope">
-          <img :src="scope.row.signature" v-for="(item,index) in scope.row.photos" style="width: 60px; height: 60px" fit="fit" lazy/>
-        </template>
-      </el-table-column>
+        <el-table v-loading="loading" :data="staffList" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55" align="center"/>
+            <el-table-column label="员工编号" align="center" prop="id"/>
+            <el-table-column label="员工名称" align="center" prop="name"/>
+            <el-table-column label="入职年限" align="center" prop="years"/>
+            <el-table-column label="入职部门" align="center" prop="dept"/>
+            <el-table-column label="简介视频" align="center" prop="video"/>
+            <el-table-column label="个人风采" width="320px" align="center" prop="photos">
+                <template slot-scope="scope">
+                    <img v-if="scope.row.photos!= null&& scope.row.photos.length>0" :src="item"
+                         v-for="(item,index) in scope.row.photos"
+                         style="width: 60px; height: 60px; padding-right: 1px" fit="fit" lazy/>
+                    <el-button v-if="scope.row.photos!= null&& scope.row.photos.length==0" size="mini" type="text"
+                               icon="el-icon-edit" @click="handleUpdate(scope.row)"
+                               v-hasPermi="['system:role:edit']"
+                    >上传风采照片
+                    </el-button>
+                </template>
+            </el-table-column>
 
-      <el-table-column label="个人签名" align="center" prop="signature">
-        <template slot-scope="scope">
-          <img :src="scope.row.signature"   style="width: 60px; height: 60px" fit="fit" lazy/>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['data:staff:edit']">
-            修改
-          </el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['data:staff:remove']">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+            <el-table-column label="个人签名" align="center" prop="signature">
+                <template slot-scope="scope">
 
-    <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
-                @pagination="getList"/>
+                    <img v-if="scope.row.signature!= ''&&scope.row.signature!= null" :src="scope.row.signature"
+                         style="width: 60px; height: 60px; padding-right: 1px" fit="fit" lazy/>
+                    <el-button g v-else size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+                               v-hasPermi="['system:role:edit']"
+                    >上传签名照片
+                    </el-button>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                <template slot-scope="scope">
+                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
+                               v-hasPermi="['data:staff:edit']">
+                        修改
+                    </el-button>
+                    <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
+                               v-hasPermi="['data:staff:remove']">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="员工名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入员工名称"/>
-        </el-form-item>
-        <el-form-item label="入职年限" prop="years">
-          <el-input v-model="form.years" placeholder="请输入入职年限"/>
-        </el-form-item>
-        <el-form-item label="入职部门" prop="dept">
-          <el-input v-model="form.dept" placeholder="请输入入职部门"/>
-        </el-form-item>
-        <el-form-item label="简介视频" prop="video">
-          <el-input v-model="form.video" placeholder="请输入简介视频"/>
-        </el-form-item>
-        <el-form-item label="个人风采" prop="photos">
-          <el-upload :action="uploadUrl" :auto--upload="false" :limit="5" list-type="picture-card"
-                     :file-list="form.photos" :on-success="handlePhotosUploadSuccess">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
+        <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
+                    @pagination="getList"/>
+
+        <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
+            <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                <el-form-item label="员工名称" prop="name">
+                    <el-input v-model="form.name" placeholder="请输入员工名称"/>
+                </el-form-item>
+                <el-form-item label="入职年限" prop="years">
+                    <el-input v-model="form.years" placeholder="请输入入职年限"/>
+                </el-form-item>
+                <el-form-item label="入职部门" prop="dept">
+                    <el-input v-model="form.dept" placeholder="请输入入职部门"/>
+                </el-form-item>
+                <el-form-item label="简介视频" prop="video">
+                    <el-input v-model="form.video" placeholder="请输入简介视频"/>
+                </el-form-item>
+                <el-form-item label="个人风采" prop="photos">
+                    <ul class="el-upload-list el-upload-list--picture-card" style="display: inline">
+                        <li v-for="(item,index) in form.photos" tabindex="0" class="el-upload-list__item is-success"
+                            style="">
+                            <div>
+                                <img :src="item" alt="" class="el-upload-list__item-thumbnail">
+                                <span class="el-upload-list__item-actions">
+		                            <span class="el-upload-list__item-preview">
+			                            <i class="el-icon-zoom-in"></i>
+		                            </span>
+		                            <span class="el-upload-list__item-delete">
+			                            <i class="el-icon-download"></i>
+		                            </span>
+		                            <span class="el-upload-list__item-delete">
+			                            <i class="el-icon-delete"></i>
+		                            </span>
+	                            </span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <el-upload :action="uploadUrl"  :auto--upload="false" :limit="5-this.form.photos.length" list-type="picture-card"
+                               v-if="this.form.length<5"
+                               style="display: inline"
+                               :on-exceed="handleExceed"
+                               :file-list="form.photos" :on-success="handlePhotosUploadSuccess">
+                        <i slot="default" class="el-icon-plus"></i>
+                        <div slot="file" slot-scope="{file}">
+                            <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                            <span class="el-upload-list__item-actions">
+	                            <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+		                            <i class="el-icon-zoom-in"></i>
+	                            </span>
+	                            <span v-if="!disabled" class="el-upload-list__item-delete"
+	                                  @click="handleDownload(file)">
+	                                <i class="el-icon-download"></i>
+	                            </span>
+	                            <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
+	                                <i class="el-icon-delete"></i>
+	                            </span>
+                            </span>
+                        </div>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="个人签名" :limit="1" prop="signature">
+                    <ul
+                            v-if="this.form.signature!=null&&this.form.signature!=''"
+		                    class="el-upload-list el-upload-list--picture-card" style="display: inline">
+                        <li tabindex="0" class="el-upload-list__item is-success"
+                            style="">
+                            <div>
+                                <img :src="this.form.signature" alt="" class="el-upload-list__item-thumbnail">
+                                <span class="el-upload-list__item-actions">
+		                            <span class="el-upload-list__item-preview">
+			                            <i class="el-icon-zoom-in"></i>
+		                            </span>
+		                            <span class="el-upload-list__item-delete">
+			                            <i class="el-icon-download"></i>
+		                            </span>
+		                            <span class="el-upload-list__item-delete">
+			                            <i class="el-icon-delete"></i>
+		                            </span>
+	                            </span>
+                            </div>
+                        </li>
+                    </ul>
+                    <el-upload v-else :action="uploadUrl" :auto--upload="false" :multiple="false" list-type="picture-card"
+                               :file="form.signature" :on-success="handlesignatureUploadSuccess">
+                        <i slot="default" class="el-icon-plus"></i>
+                        <div slot="file" slot-scope="{file}">
+                            <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
+                            <span class="el-upload-list__item-actions">
                             <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
 	                            <i class="el-icon-zoom-in"></i>
                             </span>
@@ -139,44 +219,23 @@
                                 <i class="el-icon-delete"></i>
                             </span>
                         </span>
+                        </div>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button @click="cancel">取 消</el-button>
             </div>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="个人签名" prop="signature">
-          <el-upload :action="uploadUrl" :auto--upload="false" :multiple="false" list-type="picture-card"
-                     :file-list="form.signature" :on-success="handlesignatureUploadSuccess">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
-                            <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-	                            <i class="el-icon-zoom-in"></i>
-                            </span>
-                            <span v-if="!disabled" class="el-upload-list__item-delete"
-                                  @click="handleDownload(file)">
-                                <i class="el-icon-download"></i>
-                            </span>
-                            <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
-                                <i class="el-icon-delete"></i>
-                            </span>
-                        </span>
-            </div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-  </div>
+        </el-dialog>
+        <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
+    </div>
 </template>
 
 <script>
-import {listStaff, getStaff, delStaff, addStaff, updateStaff} from '@/api/data/staff'
+import { listStaff, getStaff, delStaff, addStaff, updateStaff } from '@/api/data/staff'
 
 export default {
   name: 'Staff',
@@ -222,7 +281,7 @@ export default {
           dept: null,
           video: null,
           remark: null,
-          signature: null,
+          signature: null
         },
       // 表单参数
       form: {}
@@ -230,11 +289,11 @@ export default {
       // 表单校验
       rules: {
         creationtime: [
-          {required: true, message: '$comment不能为空', trigger: 'blur'}
+          { required: true, message: '$comment不能为空', trigger: 'blur' }
         ],
         isdeleted:
           [
-            {required: true, message: '$comment不能为空', trigger: 'blur'}
+            { required: true, message: '$comment不能为空', trigger: 'blur' }
           ]
       }
     }
@@ -264,12 +323,12 @@ export default {
     reset() {
       this.form = {
 
-        name: null,
-        years: null,
-        dept: null,
-        video: null,
-        remark: null,
-        signature: null,
+        name: 'll',
+        years: 3,
+        dept: 'll',
+        video: 'll',
+        remark: 'll',
+        signature: '',
         photos: []
 
       }
@@ -331,7 +390,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids
-      this.$modal.confirm('是否确认删除代员工信息编号为"' + ids + '"的数据项？').then(function () {
+      this.$modal.confirm('是否确认删除代员工信息编号为"' + ids + '"的数据项？').then(function() {
         return delStaff(ids)
       }).then(() => {
         this.getList()
@@ -346,10 +405,11 @@ export default {
       }, `staff_${new Date().getTime()}.xlsx`)
     },
     handleRemove(file) {
+      form.photos.pop(file)
       console.log(file.url())
     },
     handlePictureCardPreview(file) {
-      console.log("-----" + file);
+      console.log('-----' + file)
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
@@ -358,20 +418,25 @@ export default {
     },
     handlePhotosUploadSuccess(response, file, fileList) {
 
-      this.dialogImageUrl = response.data;
+      this.dialogImageUrl = response.data
       if (!this.form.photos) {
-        this.form.photos = [];
+        this.form.photos = []
       }
-      this.form.photos.push(response);
+      this.form.photos.push(response)
 
     },
     handlesignatureUploadSuccess(response, file, fileList) {
 
-      this.dialogImageUrl = response.data;
+      this.dialogImageUrl = response.data
 
-      this.form.signature=response;
+      this.form.signature = response
+      console.log('>>>>>>>>' + JSON.stringify(fileList))
 
     },
+    handleExceed(files, fileList) {
+
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    }
   }
 }
 </script>
