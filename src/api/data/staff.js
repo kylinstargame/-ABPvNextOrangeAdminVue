@@ -29,8 +29,9 @@ export function addStaff(data) {
 // 修改代员工信息
 export function updateStaff(data) {
   return request({
-    url: '/data/staff',
-    method: 'put',
+    url: '/data/staff/update' +
+      '',
+    method: 'post',
     data: data
   })
 }
