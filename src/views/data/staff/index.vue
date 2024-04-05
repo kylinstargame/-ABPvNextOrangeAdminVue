@@ -84,7 +84,7 @@
       <el-table-column label="个人风采" width="320px" align="center" prop="photos">
         <template slot-scope="scope">
           <img v-if="scope.row.photos!= null&& scope.row.photos.length>0" :src="item"
-               v-for="(item,index) in scope.row.photos"
+               v-for="(item) in scope.row.photos"
                style="width: 60px; height: 60px; padding-right: 1px" fit="fit" lazy/>
           <el-button v-if="scope.row.photos!= null&& scope.row.photos.length==0" size="mini" type="text"
                      icon="el-icon-edit" @click="handleUpdate(scope.row)"
@@ -97,8 +97,8 @@
       <el-table-column label="个人签名" align="center" prop="signature">
         <template slot-scope="scope">
 
-          <img v-if="scope.row.signature!= ''&&scope.row.signature!= null" :src="scope.row.signature"
-               style="width: 60px; height: 60px; padding-right: 1px" fit="fit" lazy/>
+          <img v-if="scope.row.signature!= ''&&scope.row.signature!= null" :src="scope.row.signature" alt=""
+               style="width: 60px; height: 60px; padding-right: 1px" lazy/>
           <el-button g v-else size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
                      v-hasPermi="['system:role:edit']"
           >上传签名照片
